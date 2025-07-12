@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Brazilian Funk Studio</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px #ff4b2b;
+    }
+    #dragArea {
+      width: 300px;
+      height: 80px;
+      border: 2px dashed #fff;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255,255,255,0.1);
+      transition: background 0.3s;
+    }
+    #dragArea.hover {
+      background: rgba(255,255,255,0.3);
+    }
+    input[type="file"] {
+      margin-bottom: 15px;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+    button {
+      background: #ff416c;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(255,75,43,0.6);
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #ff4b2b;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 720px;
+      margin-bottom: 20px;
+    }
+    #sequencerGrid, #vocalGrid, #synthGrid {
+      display: grid;
+      grid-template-columns: repeat(16, 28px);
+      gap: 4px;
+      margin-bottom: 15px;
+      user-select: none;
+    }
+    input.step, input.vocalStep {
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+    }
+    input.step:checked, input.vocalStep:checked {
+      background: #ff4b2b;
+      border-color: #ff416c;
+    }
+    #synthGrid input {
+      width: 50px;
+    }
+    label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    #mixer {
+      margin-bottom: 20px;
+      max-width: 720px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .mixerControl {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+    }
+    .mixerControl input[type=range] {
+      width: 100px;
+    }
+    #downloadLinks a {
+      margin-right: 10px;
+      color: white;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+    #visualizer {
+      width: 700px;
+      height: 100px;
+      border-radius: 8px;
+      background: #121212;
+      box-shadow: 0 0 15px #ff4b2b;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Brazilian Funk Studio</h1>
+
+<div id="dragArea">Drag & Drop Audio Sample Here</div>
+<input type="file" id="fileInput" accept=".mp3,.wav,audio/mp3,audio/wav" />
+
+<div id="controls">
+  <button id="playStopBtn">▶️ Play</button>
+  <button id="swingToggleBtn">Swing: Off</button>
+  <button id="startRecBtn">🔴 Start Recording</button>
+  <button id="stopRecBtn" disabled>⏹️ Stop Recording</button>
+</div>
+
+<div id="sequencerGrid"></div>
+<div id="vocalGrid"></div>
+<div id="synthGrid"></div>
+
+<div id="mixer">
+  <div class="mixerControl">
+    <label for="kickVol">Kick Vol</label>
+    <input type="range" id="kickVol" min="0" max="1" step="0.01" value="0.8" />
+    <label for="kickPan">Kick Pan</label>
+    <input type="range" id="kickPan" min="-1" max="1" step="0.1" value="0" />
+  </div>
+  <div class="mixerControl">
+    <label for="snareVol">Snare Vol</label>
+    <input type="range" id="snareVol" min="0" max="1" step="0.01" value="0.8" />
+    <label for="snarePan">Snare Pan</label>
+    <input type="range" id="snarePan" min="-1" max="1" step="0.1" value="0" />
+  </div>
+  <div class="mixerControl">
+    <label for="hihatVol">HiHat Vol</label>
+    <input type="range" id="hihatVol" min="0" max="1" step="0.01" value="0.6" />
+    <label for="hihatPan">HiHat Pan</label>
+    <input type="range" id="hihatPan" min="-1" max="1" step="0.1" value="0" />
+  </div>
+  <div class="mixerControl">
+    <label for="sampleVol">Sample Vol</label>
+    <input type="range" id="sampleVol" min="0" max="1" step="0.01" value="0.7" />
+    <label for="samplePan">Sample Pan</label>
+    <input type="range" id="samplePan" min="-1" max="1" step="0.1" value="0" />
+  </div>
+</div>
+
+<canvas id="visualizer"></canvas>
+
+<div id="downloadLinks"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
+<script>
+  // Audio context and setup
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let isPlaying = false;
+  let currentStep = 0;
+  const totalSteps = 16;
+  let bpm = 90;
+  let swingEnabled = false;
+  let timerID;
+  const scheduleAheadTime = 0.1;
+  let nextNoteTime = 0;
+
+  // Gain and panning nodes
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.7;
+  masterGain.connect(audioCtx.destination);
+
+  // Drums buffers and nodes
+  const drumBuffers = {};
+  const drumGainNodes = {};
+  const drumPanNodes = {};
+  const drumNames = ['kick', 'snare', 'hihat'];
+
+  // Vocal FX audio elements
+  const vocalFX = {};
+
+  // Sample buffer and nodes
+  let sampleBuffer = null;
+  const sampleGainNode = audioCtx.createGain();
+  const samplePanNode = audioCtx.createStereoPanner();
+  sampleGainNode.connect(samplePanNode);
+  samplePanNode.connect(masterGain);
+
+  // Synth data
+  const synthGridData = new Array(totalSteps).fill(0);
+  let synthOsc;
+  const synthGainNode = audioCtx.createGain();
+  synthGainNode.gain.value = 0.3;
+  synthGainNode.connect(masterGain);
+
+  // Sequencer data for drums and vocals
+  const sequencerData = { kick: new Array(totalSteps).fill(false), snare: new Array(totalSteps).fill(false), hihat: new Array(totalSteps).fill(false) };
+  const vocalGridData = { 'vai': new Array(totalSteps).fill(false), 'senta': new Array(totalSteps).fill(false) };
+
+  // Load drum samples (URLs are placeholders, replace with your own or local URLs)
+  async function loadSample(name, url) {
+    const res = await fetch(url);
+    const arrayBuffer = await res.arrayBuffer();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    drumBuffers[name] = audioBuffer;
+  }
+
+  // Load all drums and vocal FX
+  async function loadAllSamples() {
+    await loadSample('kick', 'https://cdn.jsdelivr.net/gh/jbrown/funk-studio-samples/kick.wav');
+    await loadSample('snare', 'https://cdn.jsdelivr.net/gh/jbrown/funk-studio-samples/snare.wav');
+    await loadSample('hihat', 'https://cdn.jsdelivr.net/gh/jbrown/funk-studio-samples/hihat.wav');
+
+    vocalFX['vai'] = new Audio('https://cdn.jsdelivr.net/gh/jbrown/funk-studio-samples/vai.mp3');
+    vocalFX['senta'] = new Audio('https://cdn.jsdelivr.net/gh/jbrown/funk-studio-samples/senta.mp3');
+  }
+
+  loadAllSamples();
+
+  // Setup grid UI
+  const sequencerGrid = document.getElementById('sequencerGrid');
+  const vocalGrid = document.getElementById('vocalGrid');
+  const synthGrid = document.getElementById('synthGrid');
+  const playStopBtn = document.getElementById('playStopBtn');
+  const swingToggleBtn = document.getElementById('swingToggleBtn');
+  const startRecBtn = document.getElementById('startRecBtn');
+  const stopRecBtn = document.getElementById('stopRecBtn');
+  const fileInput = document.getElementById('fileInput');
+  const dragArea = document.getElementById('dragArea');
+  const downloadLinks = document.getElementById('downloadLinks');
+  const waveformSelect = { value: 'square' }; // simplified for demo
+
+  function createGrid(gridEl, dataObj, className, isVocal = false) {
+    gridEl.innerHTML = '';
+    for(let i=0; i<totalSteps; i++) {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = className;
+      checkbox.dataset.step = i;
+      checkbox.addEventListener('change', () => {
+        dataObj[i] = checkbox.checked;
+      });
+      gridEl.appendChild(checkbox);
+    }
+  }
+
+  createGrid(sequencerGrid, sequencerData.kick, 'step');
+  createGrid(vocalGrid, vocalGridData.vai, 'vocalStep');
+  createGrid(synthGrid, synthGridData, 'synthStep');
+
+  // Play drum sample at time
+  function playSample(buffer, time, track) {
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+
+    if (!drumGainNodes[track]) {
+      drumGainNodes[track] = audioCtx.createGain();
+      drumGainNodes[track].connect(masterGain);
+    }
+
+    source.connect(drumGainNodes[track]);
+    source.start(time);
+  }
+
+  // Play vocal FX
+  function playVocalFX(name) {
+    if(!vocalFX[name]) return;
+    vocalFX[name].pause();
+    vocalFX[name].currentTime = 0;
+    vocalFX[name].play();
+  }
+
+  // Scheduler
+  function scheduler() {
+    while(nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+      scheduleStep(currentStep, nextNoteTime);
+      advanceNote();
+    }
+    timerID = setTimeout(scheduler, 25);
+  }
+
+  function scheduleStep(step, time) {
+    if(sequencerData.kick[step]) playSample(drumBuffers.kick, time, 'kick');
+    if(sequencerData.snare[step]) playSample(drumBuffers.snare, time, 'snare');
+    if(sequencerData.hihat[step]) playSample(drumBuffers.hihat, time, 'hihat');
+
+    if(vocalGridData.vai[step]) playVocalFX('vai');
+    if(vocalGridData.senta[step]) playVocalFX('senta');
+  }
+
+  function advanceNote() {
+    const secondsPerBeat = 60.0 / bpm;
+    if(swingEnabled && (currentStep % 2 === 1)) {
+      nextNoteTime += secondsPerBeat / 4 * 1.5;
+    } else {
+      nextNoteTime += secondsPerBeat / 4;
+    }
+    currentStep++;
+    if(currentStep >= totalSteps) currentStep = 0;
+  }
+
+  function play() {
+    if(!isPlaying) {
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      currentStep = 0;
+      nextNoteTime = audioCtx.currentTime + 0.05;
+      scheduler();
+      playStopBtn.textContent = '⏸️ Stop';
+      isPlaying = true;
+    } else {
+      clearTimeout(timerID);
+      playStopBtn.textContent = '▶️ Play';
+      isPlaying = false;
+    }
+  }
+
+  playStopBtn.addEventListener('click', play);
+  swingToggleBtn.addEventListener('click', () => {
+    swingEnabled = !swingEnabled;
+    swingToggleBtn.textContent = swingEnabled ? 'Swing: On' : 'Swing: Off';
+  });
+
+  // Drag & Drop sample loading
+  dragArea.addEventListener('dragover', e => {
+    e.preventDefault();
+    dragArea.classList.add('hover');
+  });
+  dragArea.addEventListener('dragleave', e => {
+    dragArea.classList.remove('hover');
+  });
+  dragArea.addEventListener('drop', e => {
+    e.preventDefault();
+    dragArea.classList.remove('hover');
+    const file = e.dataTransfer.files[0];
+    loadSampleFile(file);
+  });
+
+  // File input upload
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    loadSampleFile(file);
+  });
+
+  function loadSampleFile(file) {
+    if(!file) return;
+    if(!file.type.startsWith('audio')) {
+      alert('Please upload an audio file (MP3 or WAV).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = evt => {
+      audioCtx.decodeAudioData(evt.target.result).then(buffer => {
+        sampleBuffer = buffer;
+        alert('Sample loaded successfully!');
+      }).catch(() => alert('Error decoding audio file.'));
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Recording and exporting (simplified WAV only)
+  let recorder;
+  let recordedChunks = [];
+
+  startRecBtn.addEventListener('click', () => {
+    if (recorder && recorder.state === 'recording') return alert('Already recording!');
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const dest = audioCtx.createMediaStreamDestination();
+    masterGain.connect(dest);
+    recorder = new MediaRecorder(dest.stream);
+    recordedChunks = [];
+
+    recorder.ondataavailable = e => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    recorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+
+      const wavLink = document.createElement('a');
+      wavLink.href = url;
+      wavLink.download = 'funk_beat.wav';
+      wavLink.textContent = 'Download WAV';
+
+      downloadLinks.innerHTML = '';
+      downloadLinks.appendChild(wavLink);
+
+      startRecBtn.disabled = false;
+      stopRecBtn.disabled = true;
+    };
+
+    recorder.start();
+    startRecBtn.disabled = true;
+    stopRecBtn.disabled = false;
+  });
+
+  stopRecBtn.addEventListener('click', () => {
+    if (recorder && recorder.state === 'recording') {
+      recorder.stop();
+    }
+  });
+
+</script>
+
+</body>
+</html>
