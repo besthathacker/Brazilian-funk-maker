@@ -3,230 +3,207 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ultimate Funk + Meme + BrainRot + AI Brain Rot Studio</title>
+<title>Ultimate Funk Studio + Meme Maker</title>
 <style>
-  /* Base styles & funky background */
   body {
-    margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #111 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAX0lEQVR42u3BAQ0AAAgDoJvcf+GAcUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4BqZRAAAHXk1tWAAAAAElFTkSuQmCC') repeat;
-    color: #eee;
-    min-height: 100vh;
-    display: flex; flex-direction: column;
-  }
-  h1 {
-    text-align: center;
-    margin: 1em 0 0.3em 0;
-  }
-  /* Tab menu */
-  .tab-menu {
-    display: flex;
-    background: #222;
-    border-bottom: 2px solid #0c9;
-  }
-  .tab-menu button {
-    flex: 1;
-    padding: 1em;
-    background: #222;
-    border: none;
-    border-bottom: 3px solid transparent;
-    color: #eee;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s, border-bottom 0.3s;
-  }
-  .tab-menu button.active {
-    background: #0c9;
-    border-bottom: 3px solid #0c9;
-    color: #111;
-  }
-  /* Tab content */
-  .tab-content {
-    display: none;
-    padding: 1em;
-    background: #222;
-    flex-grow: 1;
-    overflow-y: auto;
-  }
-  .tab-content.active {
-    display: block;
-  }
-  /* Common form controls */
-  button, input[type=range], input[type=color], select, input[type=number], input[type=text] {
-    margin: 0.3em 0.5em 0.3em 0;
-    padding: 0.3em 0.6em;
-    font-size: 1em;
-  }
-  label {
-    margin-right: 0.5em;
-  }
-  canvas {
-    max-width: 100%;
+    font-family: Arial, sans-serif;
+    margin: 0;
     background: #111;
-    display: block;
-    margin: 1em 0;
-    border: 1px solid #0c9;
-    image-rendering: pixelated;
+    color: #eee;
   }
-  input[type="file"] {
-    margin-top: 0.6em;
+  header {
+    background: #222;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
-  .controls-group {
-    margin-bottom: 1em;
-  }
-  .flex-row {
+  nav {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    background: #333;
   }
-  .flex-row > * {
-    margin-right: 1em;
-    margin-bottom: 0.5em;
+  nav button {
+    flex: 1;
+    padding: 1rem;
+    background: #333;
+    color: #eee;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
   }
-  .slider-label {
-    min-width: 90px;
-  }
-  /* Funk Studio specific */
-  #funkStudio .drum-pad {
-    display: inline-block;
-    width: 60px; height: 60px;
-    margin: 5px;
+  nav button.active {
     background: #0c9;
     color: #111;
     font-weight: bold;
-    line-height: 60px;
-    text-align: center;
+  }
+  section {
+    display: none;
+    padding: 1rem;
+    max-width: 960px;
+    margin: auto;
+  }
+  section.active {
+    display: block;
+  }
+  /* Funk Studio styles */
+  .funk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(100px,1fr));
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .funk-pad {
+    background: #0c9;
+    color: #111;
     border-radius: 6px;
+    font-weight: bold;
     cursor: pointer;
     user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
   }
-  #funkStudio .drum-pad:active {
-    background: #0f6;
+  .funk-pad:hover {
+    background: #09a;
   }
-  #funkStudio .fx-button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    background: #0c9;
-    border: none;
+  .fx-buttons button.active {
+    background: #09a;
+    color: #fff;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  canvas {
+    width: 100%;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+  /* Meme Maker */
+  #memeCanvas {
+    max-width: 100%;
+    border: 2px solid #0c9;
     border-radius: 6px;
+  }
+  input, select, textarea {
+    background: #222;
+    border: 1px solid #444;
+    color: #eee;
+    padding: 0.4rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  label {
+    margin-top: 0.5rem;
+    display: block;
+  }
+  .brainrot-presets button {
+    margin: 0 0.2rem 0.2rem 0;
+    padding: 0.3rem 0.6rem;
+    background: #222;
+    color: #0c9;
+    border: 1px solid #0c9;
+    border-radius: 4px;
     cursor: pointer;
-    font-weight: bold;
+  }
+  .brainrot-presets button:hover {
+    background: #0c9;
     color: #111;
   }
-  #funkStudio .fx-button.active {
-    background: #0f6;
-  }
-  /* Loader */
-  #aiLoader {
-    color: #0c9;
-    font-weight: bold;
+  footer {
+    text-align: center;
+    padding: 1rem;
+    color: #555;
+    font-size: 0.8rem;
   }
 </style>
 </head>
 <body>
 
-<h1>Ultimate Funk + Meme + BrainRot + AI Brain Rot Studio</h1>
-
-<div class="tab-menu">
-  <button class="active" data-tab="funkStudio">🎵 Funk Studio</button>
-  <button data-tab="imageMeme">🖼️ Image Meme Maker</button>
-  <button data-tab="videoMeme">📹 Video Meme Maker</button>
-  <button data-tab="brainRot">🧠 BrainRot Maker</button>
-  <button data-tab="aiBrainRot">🤖 AI Brain Rot Maker</button>
-</div>
+<header>Ultimate Funk Studio + Meme Maker</header>
+<nav>
+  <button id="tabFunk" class="active">Funk Studio</button>
+  <button id="tabMeme">Image Meme Maker</button>
+  <button id="tabVideoMeme">Video Meme Maker</button>
+  <button id="tabBrainRot">Brain Rot Maker</button>
+</nav>
 
 <!-- FUNK STUDIO -->
-<section id="funkStudio" class="tab-content active">
+<section id="funkStudio" class="active">
   <h2>Funk Studio</h2>
-  <div>
-    <h3>Drum Machine</h3>
-    <div id="drumPads">
-      <div class="drum-pad" data-sound="kick">Kick</div>
-      <div class="drum-pad" data-sound="snare">Snare</div>
-      <div class="drum-pad" data-sound="hihat-closed">HiHat Closed</div>
-      <div class="drum-pad" data-sound="hihat-open">HiHat Open</div>
-      <div class="drum-pad" data-sound="clap">Clap</div>
-      <div class="drum-pad" data-sound="cowbell">Cowbell</div>
-      <div class="drum-pad" data-sound="shaker">Shaker</div>
-      <div class="drum-pad" data-sound="tom">Tom</div>
-    </div>
+  <div class="funk-grid" id="drumPads">
+    <!-- pads will be generated by JS -->
   </div>
-  <div>
-    <h3>Synth Controls</h3>
-    <label>Frequency: <input type="range" id="synthFreq" min="100" max="2000" value="440" /></label>
-    <label>Volume: <input type="range" id="synthVol" min="0" max="1" step="0.01" value="0.5" /></label>
-    <button id="playSynthBtn">Play Synth Note</button>
+
+  <input type="file" id="sampleUpload" accept="audio/*" multiple />
+  <div id="sampleList"></div>
+
+  <div class="fx-buttons">
+    <button id="fxReverb">Reverb</button>
+    <button id="fxDelay">Delay</button>
+    <button id="fxDistortion">Distortion</button>
   </div>
-  <div>
-    <h3>Vocal FX</h3>
-    <button class="fx-button" id="fxReverb">Reverb</button>
-    <button class="fx-button" id="fxDelay">Delay</button>
-    <button class="fx-button" id="fxDistortion">Distortion</button>
-  </div>
-  <div>
-    <h3>Sample Upload</h3>
-    <input type="file" id="sampleUpload" multiple accept="audio/*" />
-    <div id="sampleList"></div>
-  </div>
-  <div>
-    <h3>Mixer</h3>
-    <label>Master Volume: <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.7" /></label>
-  </div>
-  <div>
-    <h3>Playback Controls</h3>
-    <button id="playBtn">Play</button>
-    <button id="pauseBtn" disabled>Pause</button>
-    <label>Swing: <input type="checkbox" id="swingToggle" /></label>
-  </div>
-  <div>
-    <h3>Waveform Visualizer</h3>
-    <canvas id="waveform" width="600" height="100" style="border:1px solid #0c9;"></canvas>
-  </div>
-  <div>
-    <h3>Recording & Export</h3>
-    <button id="startRecording">Start Recording</button>
-    <button id="stopRecording" disabled>Stop Recording</button>
-    <button id="exportMP3" disabled>Export MP3</button>
-    <button id="exportWAV" disabled>Export WAV</button>
-  </div>
+
+  <h3>Synthesizer</h3>
+  <label>Frequency: <input type="range" id="synthFreq" min="100" max="1000" value="440" /></label>
+  <label>Volume: <input type="range" id="synthVol" min="0" max="1" step="0.01" value="0.5" /></label>
+  <button id="playSynthBtn">Play Synth</button>
+
+  <h3>Mixer</h3>
+  <label>Master Volume: <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.7" /></label>
+
+  <h3>Playback Controls</h3>
+  <button id="playBtn">Play Beat</button>
+  <button id="pauseBtn" disabled>Pause</button>
+  <label><input type="checkbox" id="swingToggle" /> Swing</label>
+
+  <h3>Waveform Visualizer</h3>
+  <canvas id="waveform" height="100"></canvas>
+
+  <h3>Recording & Export</h3>
+  <button id="startRecording">Start Recording</button>
+  <button id="stopRecording" disabled>Stop Recording</button>
+  <button id="exportMP3" disabled>Export MP3</button>
+  <button id="exportWAV" disabled>Export WAV</button>
 </section>
 
 <!-- IMAGE MEME MAKER -->
-<section id="imageMeme" class="tab-content">
+<section id="memeMaker">
   <h2>Image Meme Maker</h2>
-  <input type="file" accept="image/*" id="imageUpload" />
-  <canvas id="memeCanvas" width="500" height="400"></canvas>
-  <div>
-    <input type="text" id="topText" placeholder="Top Text" />
-    <input type="text" id="bottomText" placeholder="Bottom Text" />
-    <label>Font Size: <input type="number" id="fontSize" min="10" max="100" value="40" /></label>
-    <label>Font Color: <input type="color" id="fontColor" value="#ffffff" /></label>
-    <button id="downloadMemeBtn">Download Meme PNG</button>
-  </div>
+  <input type="file" id="imageUpload" accept="image/*" />
+  <canvas id="memeCanvas"></canvas>
+  <label>Top Text: <input type="text" id="topText" placeholder="TOP TEXT" /></label>
+  <label>Bottom Text: <input type="text" id="bottomText" placeholder="BOTTOM TEXT" /></label>
+  <label>Font Size: <input type="number" id="fontSize" value="40" min="10" max="100" /></label>
+  <label>Font Color: <input type="color" id="fontColor" value="#ffffff" /></label>
+  <button id="downloadMemeBtn">Download Meme</button>
 </section>
 
 <!-- VIDEO MEME MAKER -->
-<section id="videoMeme" class="tab-content">
+<section id="videoMemeMaker">
   <h2>Video Meme Maker</h2>
-  <input type="file" accept="video/*" id="videoUpload" />
-  <video id="videoElem" style="max-width:100%; display:none;" controls></video>
-  <canvas id="videoCanvas" width="480" height="270" style="display:none; border:1px solid #0c9;"></canvas>
-  <div>
-    <input type="text" id="videoTopText" placeholder="Top Text" />
-    <input type="text" id="videoBottomText" placeholder="Bottom Text" />
-    <button id="playVideoBtn">Play with Text Overlay</button>
-    <button id="pauseVideoBtn" disabled>Pause</button>
-    <button id="downloadVideoMemeBtn" disabled>Download Snapshot PNG</button>
-    <button id="exportVideoBtn" disabled>Export Video (WebM)</button>
-  </div>
+  <input type="file" id="videoUpload" accept="video/*" />
+  <video id="videoElem" controls style="display:none; max-width:100%;"></video>
+  <canvas id="videoCanvas" style="display:none;"></canvas>
+  <label>Top Text: <input type="text" id="videoTopText" placeholder="TOP TEXT" /></label>
+  <label>Bottom Text: <input type="text" id="videoBottomText" placeholder="BOTTOM TEXT" /></label>
+  <button id="playVideoBtn" disabled>Play</button>
+  <button id="pauseVideoBtn" disabled>Pause</button>
+  <button id="downloadVideoMemeBtn" disabled>Download Snapshot</button>
+  <button id="exportVideoBtn" disabled>Export 5s Video Meme</button>
 </section>
 
 <!-- BRAIN ROT MAKER -->
-<section id="brainRot" class="tab-content">
-  <h2>BrainRot Maker (Glitch Effects)</h2>
-  <input type="file" accept="image/*,video/*" id="brainRotUpload" />
-  <video id="brainRotVideo" style="display:none; max-width:100%;" controls></video>
-  <canvas id="brainRotCanvas" style="display:none; border:1px solid #0c9;"></canvas>
-  <div class="brainrot-presets">
+<section id="brainRotMaker">
+  <h2>Brain Rot Maker</h2>
+  <input type="file" id="brainRotUpload" accept="image/*,video/*" />
+  <video id="brainRotVideo" controls style="display:none; max-width:100%;"></video>
+  <canvas id="brainRotCanvas" style="display:none;"></canvas>
+  <div class="brainrot-presets" style="margin: 0.5rem 0;">
     <button data-preset="none">None</button>
     <button data-preset="glitch">Glitch</button>
     <button data-preset="pixelate">Pixelate</button>
@@ -234,740 +211,540 @@
     <button data-preset="colorShift">Color Shift</button>
     <button data-preset="invert">Invert</button>
   </div>
-  <div>
-    <button id="playBrainRotBtn" disabled>Play</button>
-    <button id="pauseBrainRotBtn" disabled>Pause</button>
-    <button id="downloadBrainRotBtn" disabled>Download PNG Snapshot</button>
-  </div>
+  <button id="playBrainRotBtn" disabled>Play Video</button>
+  <button id="pauseBrainRotBtn" disabled>Pause Video</button>
+  <button id="downloadBrainRotBtn" disabled>Download Image Snapshot</button>
 </section>
 
-<!-- AI BRAIN ROT MAKER -->
-<section id="aiBrainRot" class="tab-content">
-  <h2>🤖 AI Brain Rot Maker (diffusers.js img2img)</h2>
-  <input type="file" accept="image/*" id="aiBrainRotUpload" />
-  <br />
-  <label>Prompt: <input type="text" id="aiPrompt" value="psychedelic glitch art, brain rot, colorful distortions" style="width:300px"/></label>
-  <label>Strength: <input type="range" id="aiStrength" min="0.1" max="1" step="0.05" value="0.8" /></label>
-  <label>Steps: <input type="number" id="aiSteps" min="5" max="50" value="25" /></label>
-  <br />
-  <button id="generateAiBrainRotBtn" disabled>Generate AI Brain Rot</button>
-  <p id="aiStatus">Upload an image to get started.</p>
-  <canvas id="aiInputCanvas" width="512" height="512" style="display:none;"></canvas>
-  <canvas id="aiOutputCanvas" width="512" height="512" style="border:1px solid #0c9; display:block; margin-top:1em;"></canvas>
-  <br />
-  <a id="downloadAiBrainRotLink" href="#" download="brainrot.png" style="display:none; color:#0c9;">Download AI Brain Rot Image</a>
-  <p id="aiLoader" style="display:none;">Loading AI model... please wait (can take several minutes)</p>
-</section>
+<footer>© 2025 Funk & Meme Studio</footer>
 
-<script type="module">
-// TAB SWITCHING
-const tabs = document.querySelectorAll('.tab-menu button');
-const contents = document.querySelectorAll('.tab-content');
-tabs.forEach(tab => {
-  tab.onclick = () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    contents.forEach(c => c.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById(tab.dataset.tab).classList.add('active');
+<script>
+  // Navigation tabs
+  const tabs = {
+    funk: document.getElementById('tabFunk'),
+    meme: document.getElementById('tabMeme'),
+    videoMeme: document.getElementById('tabVideoMeme'),
+    brainRot: document.getElementById('tabBrainRot'),
   };
-});
+  const sections = {
+    funk: document.getElementById('funkStudio'),
+    meme: document.getElementById('memeMaker'),
+    videoMeme: document.getElementById('videoMemeMaker'),
+    brainRot: document.getElementById('brainRotMaker'),
+  };
+  function setActiveTab(tabKey) {
+    Object.keys(tabs).forEach(key => {
+      tabs[key].classList.toggle('active', key === tabKey);
+      sections[key].classList.toggle('active', key === tabKey);
+    });
+  }
+  Object.entries(tabs).forEach(([key, btn]) => {
+    btn.onclick = () => setActiveTab(key);
+  });
 
-/* ==== FUNK STUDIO ==== */
-const drumPads = document.querySelectorAll('#drumPads .drum-pad');
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const samples = {};
-const sampleGainNodes = {};
-const masterGain = audioCtx.createGain();
-masterGain.gain.value = 0.7;
-masterGain.connect(audioCtx.destination);
+  /* ==== FUNK STUDIO ==== */
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.7;
+  masterGain.connect(audioCtx.destination);
 
-const fxNodes = {
-  reverb: null,
-  delay: null,
-  distortion: null,
-};
+  const drumSampleURLs = {
+    kick: 'https://cdn.jsdelivr.net/gh/jbrown/DRUMS/kick.wav',
+    'hihat-closed': 'https://cdn.jsdelivr.net/gh/jbrown/DRUMS/hihat_closed.wav',
+    snare: 'https://cdn.jsdelivr.net/gh/jbrown/DRUMS/snare.wav',
+    'hihat-open': 'https://cdn.jsdelivr.net/gh/jbrown/DRUMS/hihat_open.wav'
+  };
+  const samples = {};
+  const drumPadsDiv = document.getElementById('drumPads');
 
-let reverbOn = false, delayOn = false, distortionOn = false;
+  // Create drum pads dynamically
+  Object.keys(drumSampleURLs).forEach(name => {
+    const btn = document.createElement('div');
+    btn.className = 'funk-pad';
+    btn.textContent = name.toUpperCase();
+    btn.dataset.sound = name;
+    drumPadsDiv.appendChild(btn);
+  });
 
-const fxButtons = {
-  reverb: document.getElementById('fxReverb'),
-  delay: document.getElementById('fxDelay'),
-  distortion: document.getElementById('fxDistortion'),
-};
+  const drumPads = Array.from(document.querySelectorAll('.funk-pad'));
 
-function createConvolverImpulseResponse(duration = 2, decay = 2) {
-  const rate = audioCtx.sampleRate;
-  const length = rate * duration;
-  const impulse = audioCtx.createBuffer(2, length, rate);
-  for (let channel = 0; channel < 2; channel++) {
-    const impulseChannelData = impulse.getChannelData(channel);
-    for (let i = 0; i < length; i++) {
-      impulseChannelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+  async function loadSample(name, url) {
+    const res = await fetch(url);
+    const arrayBuffer = await res.arrayBuffer();
+    samples[name] = await audioCtx.decodeAudioData(arrayBuffer);
+  }
+
+  function playSample(name) {
+    if (!samples[name]) return;
+    const source = audioCtx.createBufferSource();
+    source.buffer = samples[name];
+    source.connect(masterGain);
+    source.start();
+  }
+
+  (async () => {
+    for (const [name, url] of Object.entries(drumSampleURLs)) {
+      try {
+        await loadSample(name, url);
+      } catch (e) {
+        console.warn('Failed to load sample', name);
+      }
     }
-  }
-  return impulse;
-}
-function setupFx() {
-  // Reverb
-  const convolver = audioCtx.createConvolver();
-  convolver.buffer = createConvolverImpulseResponse();
-  fxNodes.reverb = convolver;
+  })();
 
-  // Delay
-  const delay = audioCtx.createDelay(5.0);
-  delay.delayTime.value = 0.25;
-  const feedbackGain = audioCtx.createGain();
-  feedbackGain.gain.value = 0.3;
-  delay.connect(feedbackGain);
-  feedbackGain.connect(delay);
-  fxNodes.delay = delay;
+  drumPads.forEach(pad => {
+    pad.onclick = () => {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      playSample(pad.dataset.sound);
+    };
+  });
 
-  // Distortion
-  const distortion = audioCtx.createWaveShaper();
-  function makeDistortionCurve(amount) {
-    const k = typeof amount === 'number' ? amount : 50;
-    const n_samples = 44100;
-    const curve = new Float32Array(n_samples);
-    for (let i = 0; i < n_samples; i++) {
-      const x = i * 2 / n_samples - 1;
-      curve[i] = ((3 + k) * x * 20 * Math.PI / 180) / (Math.PI + k * Math.abs(x));
+  // Sample upload
+  const sampleUpload = document.getElementById('sampleUpload');
+  const sampleList = document.getElementById('sampleList');
+
+  sampleUpload.addEventListener('change', e => {
+    const files = e.target.files;
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const arrayBuffer = reader.result;
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+        const name = file.name;
+        samples[name] = audioBuffer;
+        const item = document.createElement('div');
+        item.textContent = `Loaded sample: ${name}`;
+        sampleList.appendChild(item);
+      };
+      reader.readAsArrayBuffer(file);
     }
-    return curve;
-  }
-  distortion.curve = makeDistortionCurve(400);
-  distortion.oversample = '4x';
-  fxNodes.distortion = distortion;
-}
-setupFx();
+  });
 
-function connectAudioGraph(source) {
-  let lastNode = source;
-  if (reverbOn) {
-    lastNode.connect(fxNodes.reverb);
-    lastNode = fxNodes.reverb;
-  }
-  if (delayOn) {
-    lastNode.connect(fxNodes.delay);
-    lastNode = fxNodes.delay;
-  }
-  if (distortionOn) {
-    lastNode.connect(fxNodes.distortion);
-    lastNode = fxNodes.distortion;
-  }
-  lastNode.connect(masterGain);
-}
+  // FX toggle buttons
+  let reverbOn = false, delayOn = false, distortionOn = false;
+  const fxButtons = {
+    reverb: document.getElementById('fxReverb'),
+    delay: document.getElementById('fxDelay'),
+    distortion: document.getElementById('fxDistortion'),
+  };
 
-function playSample(name) {
-  if (!samples[name]) return;
-  const source = audioCtx.createBufferSource();
-  source.buffer = samples[name];
-  connectAudioGraph(source);
-  source.start(0);
-}
+  fxButtons.reverb.onclick = () => {
+    reverbOn = !reverbOn;
+    fxButtons.reverb.classList.toggle('active', reverbOn);
+  };
+  fxButtons.delay.onclick = () => {
+    delayOn = !delayOn;
+    fxButtons.delay.classList.toggle('active', delayOn);
+  };
+  fxButtons.distortion.onclick = () => {
+    distortionOn = !distortionOn;
+    fxButtons.distortion.classList.toggle('active', distortionOn);
+  };
 
-async function loadSample(name, url) {
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-  samples[name] = audioBuffer;
-}
+  // Synth oscillator
+  const synthFreq = document.getElementById('synthFreq');
+  const synthVol = document.getElementById('synthVol');
+  const playSynthBtn = document.getElementById('playSynthBtn');
 
-const drumSampleURLs = {
-  kick: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/kick.wav',
-  snare: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/snare.wav',
-  'hihat-closed': 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/hihat-closed.wav',
-  'hihat-open': 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/hihat-open.wav',
-  clap: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/clap.wav',
-  cowbell: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/cowbell.wav',
-  shaker: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/shaker.wav',
-  tom: 'https://cdn.jsdelivr.net/gh/jbrown/beatmachine/samples/tom.wav',
-};
-
-// Load drum samples
-(async () => {
-  for (const [name, url] of Object.entries(drumSampleURLs)) {
-    try {
-      await loadSample(name, url);
-    } catch (e) {
-      console.warn('Failed to load sample', name);
-    }
-  }
-})();
-
-drumPads.forEach(pad => {
-  pad.onclick = () => {
+  playSynthBtn.onclick = () => {
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    playSample(pad.dataset.sound);
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.frequency.value = synthFreq.value;
+    gainNode.gain.value = synthVol.value;
+    osc.connect(gainNode);
+    gainNode.connect(masterGain);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
   };
-});
 
-// Sample upload
-const sampleUpload = document.getElementById('sampleUpload');
-const sampleList = document.getElementById('sampleList');
+  // Mixer volume
+  const masterVol = document.getElementById('masterVol');
+  masterVol.oninput = () => {
+    masterGain.gain.value = masterVol.value;
+  };
 
-sampleUpload.addEventListener('change', e => {
-  const files = e.target.files;
-  for (const file of files) {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const arrayBuffer = reader.result;
-      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-      const name = file.name;
-      samples[name] = audioBuffer;
-      const item = document.createElement('div');
-      item.textContent = `Loaded sample: ${name}`;
-      sampleList.appendChild(item);
-    };
-    reader.readAsArrayBuffer(file);
+  // Playback controls
+  const playBtn = document.getElementById('playBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const swingToggle = document.getElementById('swingToggle');
+
+  let playing = false;
+  let playInterval = null;
+  let beatIndex = 0;
+  const beatPattern = ['kick', 'hihat-closed', 'snare', 'hihat-closed', 'kick', 'hihat-closed', 'snare', 'hihat-open'];
+
+  function playBeat() {
+    if (beatIndex >= beatPattern.length) beatIndex = 0;
+    playSample(beatPattern[beatIndex]);
+    beatIndex++;
   }
-});
 
-// FX toggle buttons
-fxButtons.reverb.onclick = () => {
-  reverbOn = !reverbOn;
-  fxButtons.reverb.classList.toggle('active', reverbOn);
-};
-fxButtons.delay.onclick = () => {
-  delayOn = !delayOn;
-  fxButtons.delay.classList.toggle('active', delayOn);
-};
-fxButtons.distortion.onclick = () => {
-  distortionOn = !distortionOn;
-  fxButtons.distortion.classList.toggle('active', distortionOn);
-};
-
-// Synth oscillator
-const synthFreq = document.getElementById('synthFreq');
-const synthVol = document.getElementById('synthVol');
-const playSynthBtn = document.getElementById('playSynthBtn');
-
-playSynthBtn.onclick = () => {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const osc = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-  osc.frequency.value = synthFreq.value;
-  gainNode.gain.value = synthVol.value;
-  connectAudioGraph(osc);
-  osc.connect(gainNode);
-  gainNode.connect(masterGain);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.5);
-};
-
-// Mixer volume
-const masterVol = document.getElementById('masterVol');
-masterVol.oninput = () => {
-  masterGain.gain.value = masterVol.value;
-};
-
-// Playback controls (simple sample playback example for demo)
-const playBtn = document.getElementById('playBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const swingToggle = document.getElementById('swingToggle');
-
-let playing = false;
-let playInterval = null;
-let beatIndex = 0;
-const beatPattern = ['kick', 'hihat-closed', 'snare', 'hihat-closed', 'kick', 'hihat-closed', 'snare', 'hihat-open'];
-
-function playBeat() {
-  if (beatIndex >= beatPattern.length) beatIndex = 0;
-  playSample(beatPattern[beatIndex]);
-  beatIndex++;
-}
-
-playBtn.onclick = () => {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  if (!playing) {
-    playing = true;
-    let intervalTime = swingToggle.checked ? 300 : 400;
-    playBeat();
-    playInterval = setInterval(playBeat, intervalTime);
-    playBtn.disabled = true;
-    pauseBtn.disabled = false;
-  }
-};
-pauseBtn.onclick = () => {
-  playing = false;
-  clearInterval(playInterval);
-  playBtn.disabled = false;
-  pauseBtn.disabled = true;
-};
-
-// Waveform visualizer
-const waveformCanvas = document.getElementById('waveform');
-const waveformCtx = waveformCanvas.getContext('2d');
-const analyser = audioCtx.createAnalyser();
-masterGain.connect(analyser);
-analyser.fftSize = 256;
-const bufferLength = analyser.frequencyBinCount;
-const dataArray = new Uint8Array(bufferLength);
-
-function drawWaveform() {
-  requestAnimationFrame(drawWaveform);
-  analyser.getByteTimeDomainData(dataArray);
-  waveformCtx.fillStyle = '#111';
-  waveformCtx.fillRect(0, 0, waveformCanvas.width, waveformCanvas.height);
-  waveformCtx.lineWidth = 2;
-  waveformCtx.strokeStyle = '#0c9';
-  waveformCtx.beginPath();
-  const sliceWidth = waveformCanvas.width * 1.0 / bufferLength;
-  let x = 0;
-  for (let i = 0; i < bufferLength; i++) {
-    const v = dataArray[i] / 128.0;
-    const y = v * waveformCanvas.height / 2;
-    if (i === 0) {
-      waveformCtx.moveTo(x, y);
-    } else {
-      waveformCtx.lineTo(x, y);
+  playBtn.onclick = () => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (!playing) {
+      playing = true;
+      let intervalTime = swingToggle.checked ? 300 : 400;
+      playBeat();
+      playInterval = setInterval(playBeat, intervalTime);
+      playBtn.disabled = true;
+      pauseBtn.disabled = false;
     }
-    x += sliceWidth;
+  };
+  pauseBtn.onclick = () => {
+    playing = false;
+    clearInterval(playInterval);
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+  };
+
+  // Waveform visualizer
+  const waveformCanvas = document.getElementById('waveform');
+  const waveformCtx = waveformCanvas.getContext('2d');
+  const analyser = audioCtx.createAnalyser();
+  masterGain.connect(analyser);
+  analyser.fftSize = 256;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  function drawWaveform() {
+    requestAnimationFrame(drawWaveform);
+    analyser.getByteTimeDomainData(dataArray);
+    waveformCtx.fillStyle = '#111';
+    waveformCtx.fillRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+    waveformCtx.lineWidth = 2;
+    waveformCtx.strokeStyle = '#0c9';
+    waveformCtx.beginPath();
+    const sliceWidth = waveformCanvas.width * 1.0 / bufferLength;
+    let x = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      const v = dataArray[i] / 128.0;
+      const y = v * waveformCanvas.height / 2;
+      if (i === 0) {
+        waveformCtx.moveTo(x, y);
+      } else {
+        waveformCtx.lineTo(x, y);
+      }
+      x += sliceWidth;
+    }
+    waveformCtx.lineTo(waveformCanvas.width, waveformCanvas.height / 2);
+    waveformCtx.stroke();
   }
-  waveformCtx.lineTo(waveformCanvas.width, waveformCanvas.height / 2);
-  waveformCtx.stroke();
-}
-drawWaveform();
+  drawWaveform();
 
-// Recording & Export
-let mediaRecorder;
-let recordedChunks = [];
+  // Recording & Export
+  let mediaRecorder;
+  let recordedChunks = [];
 
-const startRecordingBtn = document.getElementById('startRecording');
-const stopRecordingBtn = document.getElementById('stopRecording');
-const exportMP3Btn = document.getElementById('exportMP3');
-const exportWAVBtn = document.getElementById('exportWAV');
+  const startRecordingBtn = document.getElementById('startRecording');
+  const stopRecordingBtn = document.getElementById('stopRecording');
+  const exportMP3Btn = document.getElementById('exportMP3');
+  const exportWAVBtn = document.getElementById('exportWAV');
 
-startRecordingBtn.onclick = () => {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const dest = audioCtx.createMediaStreamDestination();
-  masterGain.connect(dest);
-  mediaRecorder = new MediaRecorder(dest.stream);
-  recordedChunks = [];
-  mediaRecorder.ondataavailable = e => {
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
-  mediaRecorder.onstop = () => {
-    exportMP3Btn.disabled = false;
-    exportWAVBtn.disabled = false;
-  };
-  mediaRecorder.start();
-  startRecordingBtn.disabled = true;
-  stopRecordingBtn.disabled = false;
-  exportMP3Btn.disabled = true;
-  exportWAVBtn.disabled = true;
-};
-stopRecordingBtn.onclick = () => {
-  mediaRecorder.stop();
-  startRecordingBtn.disabled = false;
-  stopRecordingBtn.disabled = true;
-};
-exportMP3Btn.onclick = async () => {
-  const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-  // Convert webm to wav/mp3 using lamejs or similar here if needed
-  // For demo: just download webm as mp3 placeholder
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'funk_recording.webm';
-  a.click();
-  URL.revokeObjectURL(url);
-};
-exportWAVBtn.onclick = () => {
-  const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'funk_recording.webm';
-  a.click();
-  URL.revokeObjectURL(url);
-};
-
-/* ==== IMAGE MEME MAKER ==== */
-const imageUpload = document.getElementById('imageUpload');
-const memeCanvas = document.getElementById('memeCanvas');
-const memeCtx = memeCanvas.getContext('2d');
-const topTextInput = document.getElementById('topText');
-const bottomTextInput = document.getElementById('bottomText');
-const fontSizeInput = document.getElementById('fontSize');
-const fontColorInput = document.getElementById('fontColor');
-const downloadMemeBtn = document.getElementById('downloadMemeBtn');
-
-let memeImage = null;
-
-imageUpload.onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const img = new Image();
-    img.onload = () => {
-      memeCanvas.width = img.width;
-      memeCanvas.height = img.height;
-      memeImage = img;
-      drawMeme();
+  startRecordingBtn.onclick = () => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const dest = audioCtx.createMediaStreamDestination();
+    masterGain.connect(dest);
+    mediaRecorder = new MediaRecorder(dest.stream);
+    recordedChunks = [];
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
     };
-    img.src = reader.result;
+    mediaRecorder.onstop = () => {
+      exportMP3Btn.disabled = false;
+      exportWAVBtn.disabled = false;
+    };
+    mediaRecorder.start();
+    startRecordingBtn.disabled = true;
+    stopRecordingBtn.disabled = false;
+    exportMP3Btn.disabled = true;
+    exportWAVBtn.disabled = true;
   };
-  reader.readAsDataURL(file);
-};
-
-function drawMeme() {
-  if (!memeImage) return;
-  memeCtx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
-  memeCtx.drawImage(memeImage, 0, 0);
-  memeCtx.textAlign = 'center';
-  memeCtx.fillStyle = fontColorInput.value;
-  memeCtx.strokeStyle = 'black';
-  memeCtx.lineWidth = fontSizeInput.value / 10;
-  memeCtx.font = `${fontSizeInput.value}px Impact, Arial Black, sans-serif`;
-  // Top Text
-  memeCtx.textBaseline = 'top';
-  memeCtx.fillText(topTextInput.value.toUpperCase(), memeCanvas.width / 2, 10);
-  memeCtx.strokeText(topTextInput.value.toUpperCase(), memeCanvas.width / 2, 10);
-  // Bottom Text
-  memeCtx.textBaseline = 'bottom';
-  memeCtx.fillText(bottomTextInput.value.toUpperCase(), memeCanvas.width / 2, memeCanvas.height - 10);
-  memeCtx.strokeText(bottomTextInput.value.toUpperCase(), memeCanvas.width / 2, memeCanvas.height - 10);
-}
-[topTextInput,bottomTextInput,fontSizeInput,fontColorInput].forEach(inp => inp.addEventListener('input', drawMeme));
-downloadMemeBtn.onclick = () => {
-  if (!memeImage) return;
-  const link = document.createElement('a');
-  link.download = 'meme.png';
-  link.href = memeCanvas.toDataURL('image/png');
-  link.click();
-};
-
-/* ==== VIDEO MEME MAKER ==== */
-const videoUpload = document.getElementById('videoUpload');
-const videoElem = document.getElementById('videoElem');
-const videoCanvas = document.getElementById('videoCanvas');
-const videoCtx = videoCanvas.getContext('2d');
-const videoTopText = document.getElementById('videoTopText');
-const videoBottomText = document.getElementById('videoBottomText');
-const playVideoBtn = document.getElementById('playVideoBtn');
-const pauseVideoBtn = document.getElementById('pauseVideoBtn');
-const downloadVideoMemeBtn = document.getElementById('downloadVideoMemeBtn');
-const exportVideoBtn = document.getElementById('exportVideoBtn');
-
-let videoPlaying = false;
-let videoAnimFrameId = null;
-
-videoUpload.onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  videoElem.src = url;
-  videoElem.style.display = 'block';
-  videoCanvas.style.display = 'none';
-  playVideoBtn.disabled = false;
-  pauseVideoBtn.disabled = true;
-  downloadVideoMemeBtn.disabled = true;
-  exportVideoBtn.disabled = true;
-};
-
-function drawVideoFrame() {
-  if (videoElem.paused || videoElem.ended) {
-    videoAnimFrameId = null;
-    return;
-  }
-  videoCanvas.width = videoElem.videoWidth;
-  videoCanvas.height = videoElem.videoHeight;
-  videoCtx.drawImage(videoElem, 0, 0, videoCanvas.width, videoCanvas.height);
-  videoCtx.font = '40px Impact, Arial Black, sans-serif';
-  videoCtx.fillStyle = 'white';
-  videoCtx.strokeStyle = 'black';
-  videoCtx.lineWidth = 3;
-  videoCtx.textAlign = 'center';
-  videoCtx.fillText(videoTopText.value.toUpperCase(), videoCanvas.width / 2, 50);
-  videoCtx.strokeText(videoTopText.value.toUpperCase(), videoCanvas.width / 2, 50);
-  videoCtx.fillText(videoBottomText.value.toUpperCase(), videoCanvas.width / 2, videoCanvas.height - 20);
-  videoCtx.strokeText(videoBottomText.value.toUpperCase(), videoCanvas.width / 2, videoCanvas.height - 20);
-  videoAnimFrameId = requestAnimationFrame(drawVideoFrame);
-}
-
-playVideoBtn.onclick = () => {
-  videoCanvas.style.display = 'block';
-  videoElem.pause();
-  videoPlaying = true;
-  playVideoBtn.disabled = true;
-  pauseVideoBtn.disabled = false;
-  downloadVideoMemeBtn.disabled = false;
-  exportVideoBtn.disabled = false;
-  drawVideoFrame();
-};
-
-pauseVideoBtn.onclick = () => {
-  videoPlaying = false;
-  cancelAnimationFrame(videoAnimFrameId);
-  videoAnimFrameId = null;
-  playVideoBtn.disabled = false;
-  pauseVideoBtn.disabled = true;
-};
-
-// Download canvas snapshot as PNG
-downloadVideoMemeBtn.onclick = () => {
-  if (!videoCanvas.width || !videoCanvas.height) return;
-  const link = document.createElement('a');
-  link.download = 'video_meme_snapshot.png';
-  link.href = videoCanvas.toDataURL('image/png');
-  link.click();
-};
-
-// Video export (WebM) using Whammy.js like approach or MediaRecorder capturing canvas frames (simplified demo)
-exportVideoBtn.onclick = async () => {
-  if (!videoCanvas.width || !videoCanvas.height) return alert('Play the video first with overlay to export.');
-
-  const stream = videoCanvas.captureStream(30);
-  const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-  const chunks = [];
-  recorder.ondataavailable = e => chunks.push(e.data);
-  recorder.onstop = () => {
-    const blob = new Blob(chunks, { type: 'video/webm' });
+  stopRecordingBtn.onclick = () => {
+    mediaRecorder.stop();
+    startRecordingBtn.disabled = false;
+    stopRecordingBtn.disabled = true;
+  };
+  exportMP3Btn.onclick = () => {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'video_meme.webm';
+    a.download = 'funk_recording.webm';
     a.click();
     URL.revokeObjectURL(url);
   };
-  recorder.start();
+  exportWAVBtn.onclick = () => {
+    // WAV export: tricky in-browser without libs; fallback to webm for now
+    alert('WAV export is not supported in this demo. Please use MP3 (webm) export.');
+  };
 
-  // Record 5 seconds max demo
-  setTimeout(() => recorder.stop(), 5000);
-  alert('Recording 5 seconds video meme with overlay, please wait...');
-};
+  /* ==== MEME MAKER ==== */
+  const imageUpload = document.getElementById('imageUpload');
+  const memeCanvas = document.getElementById('memeCanvas');
+  const memeCtx = memeCanvas.getContext('2d');
+  const topTextInput = document.getElementById('topText');
+  const bottomTextInput = document.getElementById('bottomText');
+  const fontSizeInput = document.getElementById('fontSize');
+  const fontColorInput = document.getElementById('fontColor');
+  const downloadMemeBtn = document.getElementById('downloadMemeBtn');
 
-/* ==== BRAIN ROT MAKER ==== */
-const brainRotUpload = document.getElementById('brainRotUpload');
-const brainRotVideo = document.getElementById('brainRotVideo');
-const brainRotCanvas = document.getElementById('brainRotCanvas');
-const brainRotCtx = brainRotCanvas.getContext('2d');
-const brainRotPresets = document.querySelectorAll('.brainrot-presets button');
-const playBrainRotBtn = document.getElementById('playBrainRotBtn');
-const pauseBrainRotBtn = document.getElementById('pauseBrainRotBtn');
-const downloadBrainRotBtn = document.getElementById('downloadBrainRotBtn');
+  let memeImage = new Image();
 
-let brainRotImage = null;
-let brainRotVideoPlaying = false;
-let brainRotAnimFrameId = null;
-let currentPreset = 'none';
+  function drawMeme() {
+    memeCanvas.width = memeImage.width;
+    memeCanvas.height = memeImage.height;
+    memeCtx.clearRect(0, 0, memeCanvas.width, memeCanvas.height);
+    memeCtx.drawImage(memeImage, 0, 0);
+    const fontSize = parseInt(fontSizeInput.value);
+    memeCtx.font = `${fontSize}px Impact, Arial Black, sans-serif`;
+    memeCtx.fillStyle = fontColorInput.value;
+    memeCtx.strokeStyle = 'black';
+    memeCtx.lineWidth = fontSize / 15;
+    memeCtx.textAlign = 'center';
+    memeCtx.textBaseline = 'top';
 
-brainRotUpload.onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  if (file.type.startsWith('video/')) {
-    brainRotVideo.src = url;
-    brainRotVideo.style.display = 'block';
-    brainRotCanvas.style.display = 'none';
-    brainRotVideo.controls = true;
-    brainRotVideoPlaying = false;
-    playBrainRotBtn.disabled = false;
-    pauseBrainRotBtn.disabled = true;
-    downloadBrainRotBtn.disabled = true;
-  } else if (file.type.startsWith('image/')) {
-    brainRotVideo.style.display = 'none';
-    brainRotCanvas.style.display = 'block';
-    brainRotImage = new Image();
-    brainRotImage.onload = () => {
-      brainRotCanvas.width = brainRotImage.width;
-      brainRotCanvas.height = brainRotImage.height;
-      applyBrainRotEffect();
-      playBrainRotBtn.disabled = true;
-      pauseBrainRotBtn.disabled = true;
-      downloadBrainRotBtn.disabled = false;
+    // Top text
+    const topText = topTextInput.value.toUpperCase();
+    memeCtx.fillText(topText, memeCanvas.width / 2, 10);
+    memeCtx.strokeText(topText, memeCanvas.width / 2, 10);
+
+    // Bottom text
+    const bottomText = bottomTextInput.value.toUpperCase();
+    memeCtx.textBaseline = 'bottom';
+    memeCtx.fillText(bottomText, memeCanvas.width / 2, memeCanvas.height - 10);
+    memeCtx.strokeText(bottomText, memeCanvas.width / 2, memeCanvas.height - 10);
+  }
+
+  imageUpload.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      memeImage.onload = () => {
+        drawMeme();
+      };
+      memeImage.src = reader.result;
     };
-    brainRotImage.src = url;
+    reader.readAsDataURL(file);
+  };
+
+  [topTextInput, bottomTextInput, fontSizeInput, fontColorInput].forEach(el => {
+    el.oninput = drawMeme;
+  });
+
+  downloadMemeBtn.onclick = () => {
+    const link = document.createElement('a');
+    link.download = 'meme.png';
+    link.href = memeCanvas.toDataURL('image/png');
+    link.click();
+  };
+
+  /* ==== VIDEO MEME MAKER ==== */
+  const videoUpload = document.getElementById('videoUpload');
+  const videoElem = document.getElementById('videoElem');
+  const videoCanvas = document.getElementById('videoCanvas');
+  const videoCtx = videoCanvas.getContext('2d');
+  const videoTopText = document.getElementById('videoTopText');
+  const videoBottomText = document.getElementById('videoBottomText');
+  const playVideoBtn = document.getElementById('playVideoBtn');
+  const pauseVideoBtn = document.getElementById('pauseVideoBtn');
+  const downloadVideoMemeBtn = document.getElementById('downloadVideoMemeBtn');
+  const exportVideoBtn = document.getElementById('exportVideoBtn');
+
+  let videoPlaying = false;
+  let videoInterval;
+
+  videoUpload.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    videoElem.src = URL.createObjectURL(file);
+    videoElem.style.display = 'block';
+    videoCanvas.style.display = 'block';
+    videoElem.load();
+    videoElem.pause();
+    playVideoBtn.disabled = false;
+    pauseVideoBtn.disabled = true;
+    downloadVideoMemeBtn.disabled = false;
+    exportVideoBtn.disabled = false;
+  };
+
+  function drawVideoFrame() {
+    videoCanvas.width = videoElem.videoWidth;
+    videoCanvas.height = videoElem.videoHeight;
+    videoCtx.clearRect(0, 0, videoCanvas.width, videoCanvas.height);
+    videoCtx.drawImage(videoElem, 0, 0);
+    videoCtx.font = '40px Impact, Arial Black';
+    videoCtx.fillStyle = 'white';
+    videoCtx.strokeStyle = 'black';
+    videoCtx.lineWidth = 3;
+    videoCtx.textAlign = 'center';
+    if(videoTopText.value) {
+      videoCtx.fillText(videoTopText.value.toUpperCase(), videoCanvas.width / 2, 50);
+      videoCtx.strokeText(videoTopText.value.toUpperCase(), videoCanvas.width / 2, 50);
+    }
+    if(videoBottomText.value) {
+      videoCtx.fillText(videoBottomText.value.toUpperCase(), videoCanvas.width / 2, videoCanvas.height - 30);
+      videoCtx.strokeText(videoBottomText.value.toUpperCase(), videoCanvas.width / 2, videoCanvas.height - 30);
+    }
   }
-};
 
-function applyBrainRotEffect() {
-  if (!brainRotImage) return;
-  brainRotCtx.clearRect(0, 0, brainRotCanvas.width, brainRotCanvas.height);
-  brainRotCtx.drawImage(brainRotImage, 0, 0);
-  let imageData = brainRotCtx.getImageData(0, 0, brainRotCanvas.width, brainRotCanvas.height);
-  let data = imageData.data;
+  playVideoBtn.onclick = () => {
+    videoElem.play();
+    videoPlaying = true;
+    playVideoBtn.disabled = true;
+    pauseVideoBtn.disabled = false;
+    videoInterval = setInterval(drawVideoFrame, 33);
+  };
+  pauseVideoBtn.onclick = () => {
+    videoElem.pause();
+    videoPlaying = false;
+    playVideoBtn.disabled = false;
+    pauseVideoBtn.disabled = true;
+    clearInterval(videoInterval);
+  };
+  downloadVideoMemeBtn.onclick = () => {
+    drawVideoFrame();
+    const link = document.createElement('a');
+    link.download = 'video-meme-snapshot.png';
+    link.href = videoCanvas.toDataURL('image/png');
+    link.click();
+  };
+  exportVideoBtn.onclick = () => {
+    if(!videoCanvas.width || !videoCanvas.height) return alert('Load a video first!');
+    const stream = videoCanvas.captureStream(30);
+    const recorder = new MediaRecorder(stream, {mimeType: 'video/webm'});
+    const chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunks, {type: 'video/webm'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'video-meme.webm';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    recorder.start();
+    let duration = 0;
+    const maxDuration = 5000; // 5 seconds
+    const interval = setInterval(() => {
+      drawVideoFrame();
+      duration += 100;
+      if (duration >= maxDuration) {
+        clearInterval(interval);
+        recorder.stop();
+      }
+    }, 100);
+  };
 
-  switch(currentPreset) {
-    case 'glitch':
-      for (let i = 0; i < data.length; i += 4) {
-        if (Math.random() < 0.05) {
-          data[i] = data[i + 4] || data[i];       // R shift
-          data[i + 1] = data[i + 5] || data[i + 1]; // G shift
-        }
-      }
-      break;
-    case 'pixelate':
-      const pixelSize = 10;
-      for(let y = 0; y < brainRotCanvas.height; y += pixelSize){
-        for(let x = 0; x < brainRotCanvas.width; x += pixelSize){
-          const i = (y * brainRotCanvas.width + x) * 4;
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-          for(let py = 0; py < pixelSize; py++){
-            for(let px = 0; px < pixelSize; px++){
-              const ii = ((y + py) * brainRotCanvas.width + (x + px)) * 4;
-              data[ii] = r;
-              data[ii + 1] = g;
-              data[ii + 2] = b;
-            }
-          }
-        }
-      }
-      break;
-    case 'noise':
-      for(let i = 0; i < data.length; i += 4){
-        if(Math.random() < 0.1){
-          const val = Math.random() * 255;
-          data[i] = val;
-          data[i+1] = val;
-          data[i+2] = val;
-        }
-      }
-      break;
-    case 'colorShift':
-      for(let i = 0; i < data.length; i += 4){
-        let r = data[i];
-        data[i] = data[i + 1];
-        data[i + 1] = data[i + 2];
-        data[i + 2] = r;
-      }
-      break;
-    case 'invert':
-      for(let i = 0; i < data.length; i += 4){
-        data[i] = 255 - data[i];
-        data[i + 1] = 255 - data[i + 1];
-        data[i + 2] = 255 - data[i + 2];
-      }
-      break;
-    default:
-      // no effect
-      break;
-  }
-  brainRotCtx.putImageData(imageData, 0, 0);
-}
+  /* ==== BRAIN ROT MAKER ==== */
+  const brainRotUpload = document.getElementById('brainRotUpload');
+  const brainRotVideo = document.getElementById('brainRotVideo');
+  const brainRotCanvas = document.getElementById('brainRotCanvas');
+  const playBrainRotBtn = document.getElementById('playBrainRotBtn');
+  const pauseBrainRotBtn = document.getElementById('pauseBrainRotBtn');
+  const downloadBrainRotBtn = document.getElementById('downloadBrainRotBtn');
+  const presetsButtons = document.querySelectorAll('.brainrot-presets button');
 
-brainRotPresets.forEach(button => {
-  button.onclick = () => {
-    currentPreset = button.dataset.preset;
-    if (brainRotImage) {
-      applyBrainRotEffect();
+  let brainRotVideoPlaying = false;
+  let brainRotCtx = brainRotCanvas.getContext('2d');
+  let brainRotEffect = 'none';
+
+  brainRotUpload.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if(file.type.startsWith('video/')) {
+      brainRotVideo.src = url;
+      brainRotVideo.style.display = 'block';
+      brainRotCanvas.style.display = 'none';
+      playBrainRotBtn.disabled = false;
+      pauseBrainRotBtn.disabled = true;
+      downloadBrainRotBtn.disabled = true;
+    } else if(file.type.startsWith('image/')) {
+      brainRotVideo.style.display = 'none';
+      brainRotCanvas.style.display = 'block';
+      const img = new Image();
+      img.onload = () => {
+        brainRotCanvas.width = img.width;
+        brainRotCanvas.height = img.height;
+        brainRotCtx.drawImage(img, 0, 0);
+        applyBrainRotEffect();
+        downloadBrainRotBtn.disabled = false;
+      };
+      img.src = url;
     }
   };
-});
 
-playBrainRotBtn.onclick = () => {
-  if (brainRotVideo.src) {
-    brainRotVideo.play();
-    brainRotVideoPlaying = true;
-    playBrainRotBtn.disabled = true;
-    pauseBrainRotBtn.disabled = false;
-  }
-};
-
-pauseBrainRotBtn.onclick = () => {
-  if (brainRotVideo.src) {
-    brainRotVideo.pause();
-    brainRotVideoPlaying = false;
-    playBrainRotBtn.disabled = false;
-    pauseBrainRotBtn.disabled = true;
-  }
-};
-
-downloadBrainRotBtn.onclick = () => {
-  if (!brainRotCanvas.width || !brainRotCanvas.height) return;
-  const link = document.createElement('a');
-  link.download = 'brainrot.png';
-  link.href = brainRotCanvas.toDataURL('image/png');
-  link.click();
-};
-
-/* ==== AI BRAIN ROT MAKER ==== */
-// Uses diffusers.js library for img2img AI generation
-import { Diffusion } from 'https://cdn.jsdelivr.net/npm/@xenova/diffusers@1.0.1/dist/diffusers.min.js';
-
-const aiBrainRotUpload = document.getElementById('aiBrainRotUpload');
-const aiPrompt = document.getElementById('aiPrompt');
-const aiStrength = document.getElementById('aiStrength');
-const aiSteps = document.getElementById('aiSteps');
-const generateAiBrainRotBtn = document.getElementById('generateAiBrainRotBtn');
-const aiStatus = document.getElementById('aiStatus');
-const aiInputCanvas = document.getElementById('aiInputCanvas');
-const aiOutputCanvas = document.getElementById('aiOutputCanvas');
-const downloadAiBrainRotLink = document.getElementById('downloadAiBrainRotLink');
-const aiLoader = document.getElementById('aiLoader');
-
-let aiInputImage = null;
-let diffusionModel = null;
-
-aiBrainRotUpload.onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const img = new Image();
-    img.onload = () => {
-      aiInputCanvas.width = 512;
-      aiInputCanvas.height = 512;
-      const ctx = aiInputCanvas.getContext('2d');
-      ctx.clearRect(0, 0, 512, 512);
-      ctx.drawImage(img, 0, 0, 512, 512);
-      aiInputImage = ctx.getImageData(0, 0, 512, 512);
-      generateAiBrainRotBtn.disabled = false;
-      aiStatus.textContent = 'Ready to generate AI Brain Rot.';
-      downloadAiBrainRotLink.style.display = 'none';
-      aiOutputCanvas.getContext('2d').clearRect(0, 0, 512, 512);
+  presetsButtons.forEach(btn => {
+    btn.onclick = () => {
+      brainRotEffect = btn.dataset.preset;
+      applyBrainRotEffect();
     };
-    img.src = reader.result;
+  });
+
+  function applyBrainRotEffect() {
+    if(brainRotVideo.style.display === 'block') return; // video handled separately
+    const imageData = brainRotCtx.getImageData(0, 0, brainRotCanvas.width, brainRotCanvas.height);
+    const data = imageData.data;
+
+    if (brainRotEffect === 'none') {
+      // reload original image for no effect, do nothing here for now
+      return;
+    }
+    for(let i=0; i<data.length; i+=4) {
+      let r=data[i], g=data[i+1], b=data[i+2];
+      if(brainRotEffect === 'invert') {
+        data[i] = 255-r;
+        data[i+1] = 255-g;
+        data[i+2] = 255-b;
+      } else if(brainRotEffect === 'colorShift') {
+        data[i] = b;
+        data[i+1] = r;
+        data[i+2] = g;
+      } else if(brainRotEffect === 'noise') {
+        const noise = (Math.random() - 0.5) * 50;
+        data[i] = Math.min(255, Math.max(0, r + noise));
+        data[i+1] = Math.min(255, Math.max(0, g + noise));
+        data[i+2] = Math.min(255, Math.max(0, b + noise));
+      } else if(brainRotEffect === 'pixelate') {
+        // simple pixelate effect: skip for demo
+      } else if(brainRotEffect === 'glitch') {
+        // simple glitch effect: swap random pixels
+        if(i + 16 < data.length) {
+          const tempR = data[i];
+          data[i] = data[i+16];
+          data[i+16] = tempR;
+        }
+      }
+    }
+    brainRotCtx.putImageData(imageData, 0, 0);
+  }
+
+  playBrainRotBtn.onclick = () => {
+    if (brainRotVideo.src) {
+      brainRotVideo.play();
+      brainRotVideoPlaying = true;
+      playBrainRotBtn.disabled = true;
+      pauseBrainRotBtn.disabled = false;
+    }
   };
-  reader.readAsDataURL(file);
-};
-
-async function loadModel() {
-  aiLoader.style.display = 'block';
-  aiStatus.textContent = 'Loading AI model, please wait... (can take a few minutes)';
-  diffusionModel = await Diffusion.from_pretrained('Xenova/ai-brainrot-funk');
-  aiLoader.style.display = 'none';
-  aiStatus.textContent = 'AI model loaded. Upload image and press Generate.';
-}
-
-generateAiBrainRotBtn.onclick = async () => {
-  if (!diffusionModel || !aiInputImage) {
-    alert('AI model not loaded or input image missing.');
-    return;
-  }
-  aiStatus.textContent = 'Generating AI Brain Rot... Please wait.';
-  generateAiBrainRotBtn.disabled = true;
-
-  try {
-    const inputImageDataURL = aiInputCanvas.toDataURL('image/png');
-    const result = await diffusionModel.img2img({
-      prompt: aiPrompt.value,
-      image: inputImageDataURL,
-      strength: parseFloat(aiStrength.value),
-      num_inference_steps: parseInt(aiSteps.value),
-    });
-    const resultImage = new Image();
-    resultImage.onload = () => {
-      const ctx = aiOutputCanvas.getContext('2d');
-      ctx.clearRect(0, 0, aiOutputCanvas.width, aiOutputCanvas.height);
-      ctx.drawImage(resultImage, 0, 0);
-      downloadAiBrainRotLink.href = aiOutputCanvas.toDataURL('image/png');
-      downloadAiBrainRotLink.style.display = 'inline-block';
-      aiStatus.textContent = 'AI Brain Rot generated! Download or generate again.';
-      generateAiBrainRotBtn.disabled = false;
-    };
-    resultImage.src = result.image;
-  } catch (e) {
-    aiStatus.textContent = 'Error during AI generation: ' + e.message;
-    generateAiBrainRotBtn.disabled = false;
-  }
-};
-
-loadModel();
-
+  pauseBrainRotBtn.onclick = () => {
+    if (brainRotVideo.src) {
+      brainRotVideo.pause();
+      brainRotVideoPlaying = false;
+      playBrainRotBtn.disabled = false;
+      pauseBrainRotBtn.disabled = true;
+    }
+  };
+  downloadBrainRotBtn.onclick = () => {
+    if (!brainRotCanvas.width || !brainRotCanvas.height) return;
+    const link = document.createElement('a');
+    link.download = 'brainrot.png';
+    link.href = brainRotCanvas.toDataURL('image/png');
+    link.click();
+  };
 </script>
 
 </body>
