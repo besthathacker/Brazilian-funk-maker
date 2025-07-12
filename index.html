@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Funk Studio Pro - Brazilian Funk Vibe</title>
 <style>
-  /* Background: colorful funky Brazilian style, Base64 embedded */
   body {
     margin: 0;
     padding: 1em;
@@ -18,8 +17,6 @@
     background-size: cover;
     position: relative;
   }
-
-  /* Overlay to keep text readable */
   body::before {
     content: "";
     position: fixed;
@@ -28,20 +25,17 @@
     pointer-events: none;
     z-index: 0;
   }
-
   h1 {
     color: #ff79a8;
     position: relative;
     z-index: 1;
   }
-
   .container {
     max-width: 900px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
   }
-
   button, input[type=range], select {
     background: #ff4081;
     border: none;
@@ -118,9 +112,25 @@
     margin-top: 1em;
     color: #ff79a8;
     font-style: italic;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .drag-area p {
-    margin: 0;
+    margin: 0 0 0.5em 0;
+  }
+  #fileInput {
+    cursor: pointer;
+    background: #ff4081;
+    border: none;
+    color: white;
+    padding: 0.4em 1em;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+  #fileInput:hover {
+    background: #ff79a8;
   }
   .preset-section input {
     width: 200px;
@@ -160,7 +170,8 @@
   </div>
 
   <div class="drag-area" id="dragArea">
-    <p>Drag & drop MP3/WAV samples here to add layers</p>
+    <p>Drag & drop MP3/WAV samples here <strong>or</strong> use the button below to upload</p>
+    <input type="file" id="fileInput" accept="audio/*" />
   </div>
 
   <h2>🎹 Melody Synth Automation</h2>
@@ -222,41 +233,34 @@
   <audio id="bate" src="https://cdn.freesound.org/previews/692/692316_12054908-lq.mp3"></audio>
 
 <script>
-  // Audio Context & Nodes
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioCtx = new AudioContext();
 
-  // Master Gain
   const masterGain = audioCtx.createGain();
   masterGain.gain.value = 0.8;
   masterGain.connect(audioCtx.destination);
 
-  // Analyser for visualizer
   const analyser = audioCtx.createAnalyser();
   analyser.fftSize = 256;
   masterGain.connect(analyser);
   const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-  // Variables
   let isPlaying = false;
   let currentStep = 0;
   const totalSteps = 16;
   let swingEnabled = false;
 
-  // Scheduler
   let timerID;
   let nextNoteTime = 0;
   let bpm = 140;
-  const scheduleAheadTime = 0.1; // seconds
-  const lookahead = 25; // ms
+  const scheduleAheadTime = 0.1;
+  const lookahead = 25;
 
-  // Drum Track Settings
   const drumTracks = ['kick', 'snare', 'hihat'];
   const drumBuffers = {};
   const drumGainNodes = {};
   const drumPanNodes = {};
 
-  // Sample Track
   let sampleBuffer = null;
   const sampleGainNode = audioCtx.createGain();
   const samplePanNode = audioCtx.createStereoPanner();
@@ -264,33 +268,26 @@
   samplePanNode.connect(masterGain);
   sampleGainNode.gain.value = 0.8;
 
-  // Synth Track
   let synthOsc = null;
   let synthGainNode = audioCtx.createGain();
   synthGainNode.gain.value = 0;
   synthGainNode.connect(masterGain);
 
-  // Vocal FX Audio elements
   const vocalFX = {
     'vai': document.getElementById('vai'),
     'senta': document.getElementById('senta'),
     'bate': document.getElementById('bate')
   };
 
-  // Vocal FX Sequencer data
   const vocalGridData = Array(totalSteps).fill(null).map(() => ({ vai: false, senta: false, bate: false }));
-
-  // Synth Automation data: freq per step (Hz)
   const synthGridData = new Array(totalSteps).fill(440);
 
-  // Sequencer data (drums)
   const sequencerData = {
     kick: new Array(totalSteps).fill(false),
     snare: new Array(totalSteps).fill(false),
     hihat: new Array(totalSteps).fill(false)
   };
 
-  // Initialize drum gain and pan nodes
   drumTracks.forEach(track => {
     drumGainNodes[track] = audioCtx.createGain();
     drumPanNodes[track] = audioCtx.createStereoPanner();
@@ -300,7 +297,6 @@
     drumPanNodes[track].pan.value = 0;
   });
 
-  // Load drum samples (kick/snare/hihat)
   async function loadDrumSamples() {
     const urls = {
       kick: 'https://cdn.freesound.org/previews/20/20712_512123-lq.mp3',
@@ -315,7 +311,6 @@
   }
   loadDrumSamples();
 
-  // Create grids
   const sequencerGrid = document.getElementById('sequencerGrid');
   const vocalGrid = document.getElementById('vocalGrid');
   const synthGrid = document.getElementById('synthGrid');
@@ -333,11 +328,10 @@
   const loadPresetBtn = document.getElementById('loadPresetBtn');
   const waveformSelect = document.getElementById('waveformSelect');
   const dragArea = document.getElementById('dragArea');
+  const fileInput = document.getElementById('fileInput');
 
-  // Setup sequencer grid for drums
   function setupSequencerGrid() {
     sequencerGrid.innerHTML = '';
-    // header row
     sequencerGrid.appendChild(document.createElement('div'));
     for (let i = 0; i < totalSteps; i++) {
       const stepLabel = document.createElement('div');
@@ -363,10 +357,8 @@
     });
   }
 
-  // Setup vocal FX grid
   function setupVocalGrid() {
     vocalGrid.innerHTML = '';
-    // header
     vocalGrid.appendChild(document.createElement('div'));
     for (let i = 0; i < totalSteps; i++) {
       const stepLabel = document.createElement('div');
@@ -392,21 +384,19 @@
     });
   }
 
-  // Setup synth automation grid
   function setupSynthGrid() {
     synthGrid.innerHTML = '';
     synthGrid.style.gridTemplateColumns = `80px repeat(${totalSteps}, 30px)`;
-    // header
     synthGrid.appendChild(document.createElement('div'));
-    for (let i = 0; i < totalSteps; i++) {
+    for(let i=0; i<totalSteps; i++) {
       const stepLabel = document.createElement('div');
-      stepLabel.textContent = (i + 1);
+      stepLabel.textContent = (i+1);
       synthGrid.appendChild(stepLabel);
     }
     const label = document.createElement('label');
     label.textContent = 'Freq (Hz)';
     synthGrid.appendChild(label);
-    for (let i = 0; i < totalSteps; i++) {
+    for(let i=0; i<totalSteps; i++) {
       const input = document.createElement('input');
       input.type = 'number';
       input.min = 100;
@@ -421,7 +411,6 @@
     }
   }
 
-  // Play drum sample at scheduled time
   function playSample(buffer, time, track) {
     const source = audioCtx.createBufferSource();
     source.buffer = buffer;
@@ -433,7 +422,6 @@
     source.start(time);
   }
 
-  // Play sample track buffer
   function playSampleBuffer(time) {
     if(!sampleBuffer) return;
     const source = audioCtx.createBufferSource();
@@ -442,7 +430,6 @@
     source.start(time);
   }
 
-  // Play vocal FX
   function playVocalFX(name) {
     const audioElem = vocalFX[name];
     if(!audioElem) return;
@@ -451,7 +438,6 @@
     audioElem.play();
   }
 
-  // Play synth note (simple oscillator)
   function playSynthNote(freq, time) {
     if(synthOsc) {
       synthOsc.stop(time);
@@ -466,7 +452,6 @@
     synthOsc.stop(time + 0.3);
   }
 
-  // Scheduler function
   function scheduler() {
     while(nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
       scheduleStep(currentStep, nextNoteTime);
@@ -475,7 +460,6 @@
     timerID = setTimeout(scheduler, lookahead);
   }
 
-  // Schedule single step
   function scheduleStep(step, time) {
     drumTracks.forEach(track => {
       if(sequencerData[track][step]) {
@@ -483,24 +467,20 @@
       }
     });
 
-    // Sample track plays every 4 steps (1 bar)
     if(sampleBuffer && (step % 4 === 0)) {
       playSampleBuffer(time);
     }
 
-    // Vocal FX plays if toggled on step
     const vocals = vocalGridData[step];
     for(const vocal in vocals) {
       if(vocals[vocal]) playVocalFX(vocal);
     }
 
-    // Play synth note
     playSynthNote(synthGridData[step], time);
 
     highlightStep(step);
   }
 
-  // Highlight current step in grids
   function highlightStep(step) {
     document.querySelectorAll('#sequencerGrid input.step, #vocalGrid input.vocalStep, #synthGrid input').forEach(el => {
       if(el.dataset.step == step) el.classList.add('active');
@@ -508,12 +488,10 @@
     });
   }
 
-  // Clear highlights
   function clearHighlights() {
     document.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
   }
 
-  // Advance note time with optional swing
   function advanceNote() {
     const secondsPerBeat = 60.0 / bpm;
     if(swingEnabled && (currentStep % 2 === 1)) {
@@ -525,7 +503,6 @@
     if(currentStep >= totalSteps) currentStep = 0;
   }
 
-  // Play / Stop button handler
   function play() {
     if(!isPlaying) {
       if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -542,13 +519,11 @@
     }
   }
 
-  // Toggle swing mode
   function toggleSwing() {
     swingEnabled = !swingEnabled;
     swingToggleBtn.textContent = swingEnabled ? 'Swing: On' : 'Swing: Off';
   }
 
-  // Volume and BPM handlers
   bpmSlider.addEventListener('input', () => {
     bpm = Number(bpmSlider.value);
     bpmDisplay.textContent = bpm;
@@ -560,7 +535,6 @@
     volDisplay.textContent = val.toFixed(2);
   });
 
-  // Drag and drop sample loader
   dragArea.addEventListener('dragover', e => e.preventDefault());
   dragArea.addEventListener('drop', e => {
     e.preventDefault();
@@ -580,14 +554,25 @@
     reader.readAsArrayBuffer(file);
   });
 
-  // Vocal FX buttons play
-  document.querySelectorAll('.vocal-fx button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      playVocalFX(btn.dataset.vocal);
-    });
+  // New file input upload handler:
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('audio')) {
+      alert('Please select a valid audio file (MP3 or WAV).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      audioCtx.decodeAudioData(evt.target.result).then(buffer => {
+        sampleBuffer = buffer;
+        alert('Sample loaded successfully!');
+        fileInput.value = ''; // reset input so same file can be reloaded if needed
+      });
+    };
+    reader.readAsArrayBuffer(file);
   });
 
-  // Mixer controls setup
   ['kick', 'snare', 'hihat', 'sample'].forEach(track => {
     document.getElementById(track + 'Vol').addEventListener('input', e => {
       const val = Number(e.target.value);
@@ -601,7 +586,6 @@
     });
   });
 
-  // Preset save/load
   function savePreset() {
     const preset = {
       bpm,
@@ -662,7 +646,7 @@
   savePresetBtn.addEventListener('click', savePreset);
   loadPresetBtn.addEventListener('click', loadPreset);
 
-  // Visualizer drawing
+  // Visualizer
   const canvas = document.getElementById('visualizer');
   const ctx = canvas.getContext('2d');
   function drawVisualizer() {
@@ -680,7 +664,7 @@
   }
   drawVisualizer();
 
-  // Recording with MediaRecorder
+  // Recording
   let recorder;
   let recordedChunks = [];
 
@@ -740,8 +724,6 @@
     }
   });
 
-  // MP3 encoding with lamejs from CDN
-  // See below for function
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
 <script>
@@ -768,12 +750,10 @@
     return URL.createObjectURL(mp3Blob);
   }
 
-  // Initialize grids
   setupSequencerGrid();
   setupVocalGrid();
   setupSynthGrid();
 
-  // Event listeners
   playStopBtn.addEventListener('click', play);
   swingToggleBtn.addEventListener('click', toggleSwing);
 </script>
